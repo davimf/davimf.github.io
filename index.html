@@ -1,251 +1,147 @@
-<!DOCTYPE html>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html ng-app="myApp">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		
+		<title>Test JS</title>
+		
+		<link href="./vendors/font-awesome-4.7.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+		<link href="./vendors/bootstrap-3.3.5/dist/css/bootstrap.min.css" rel="stylesheet" type="text/css">
+		
+		<script type="text/css">
+		</script>
+	</head>
+	
+	<body ng-controller="moedaController" data-ng-init="inicio();">
+		<nav class="navbar navbar-inverse">
+			<div class="container">
+				<div class="navbar-header">
+					<div class="navbar-brand">
+						<span class='brand text-center'>Test <small>JS</small></span>
+					</div>
+				</div>
+				<div id="navbar" class="navbar-collapse collapse">
+					<ul class="nav navbar-nav">
+						<li ng-class="{true: 'active', false: ''} [exibirTabelaIco]"><a href="#" ng-click="inicio();">Home</a></li>
+						<li><a href="#" data-toggle="popover" title="Versão 1.0 Beta" 
+							data-content="emow3.com" data-container="body" data-trigger="focus">Sobre</a></li>
+					</ul>
+				</div>
+			</div>
+		</nav>
+		
+		<section id="tabelaIco" ng-show="exibirTabelaIco">
+			<div class="container text-small">
+				<div class="panel panel-default">
+					<div class="panel-heading">
+						<h4>
+							<span class="glyphicon glyphicon-random" aria-hidden="true"></span> Test
+						</h4>
+					</div>
+					<div class="panel-body">
+						<div class="row">
+							<div class="col-xs-6">
+								<p>...</p>
+								<p><label>Frase: <input ng-model="textToConvert" placeholder="..." ng-blur="embaralha()"></label></p>
+							</div>
+							<div class="col-xs-6">
+								<p>?</p>
+								<p><label><span> {{ result }}</span></label></p>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-xs-12">
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</section>
+		<!-- FIM Historico -->
 
-<html lang="en">
-<head>
-	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width">
-	<title>Nebulas JavaScript API Index</title>
+		<footer>
+			<div class="text-center">
+				<p>&copy; emow3 Solutions - <span ng-bind="data | date:'dd/MM/yyyy HH:mm'"></span></p>
+			</div>
+		</footer>
+		
+		<script src="./vendors/jquery-3.1.1/jquery-3.1.1.min.js"></script>
+		<script src="./vendors/bootstrap-3.3.5/dist/js/bootstrap.min.js"></script>
+		<script src="./vendors/angular-1.6.3/angular.min.js"></script>
 
-	<!--[if lt IE 9]>
-	<script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-	<![endif]-->
-	<link type="text/css" rel="stylesheet" href="styles/sunlight.default.css">
-	<link rel="shortcut icon" href="img/logo.png" type="image/x-icon">
-
-	<link type="text/css" rel="stylesheet" href="styles/site.lumen.css">
-
-</head>
-
-<body>
-
-<div class="navbar navbar-default navbar-fixed-top ">
-<div class="container">
-	<div class="navbar-header">
-		<a class="navbar-brand" href="index.html"><img class="branding-logo" src="img/logo.png"
-		alt="logo"/>Nebulas JavaScript API</a>
-		<button class="navbar-toggle" type="button" data-toggle="collapse" data-target="#topNavigation">
-			<span class="icon-bar"></span>
-			<span class="icon-bar"></span>
-			<span class="icon-bar"></span>
-        </button>
-	</div>
-	<div class="navbar-collapse collapse" id="topNavigation">
-		<ul class="nav navbar-nav">
+		<script>
+			// JScript para efeito do popup interno do menú
+			$(function () {
+				$('[data-toggle="popover"]').popover()
+			})
 			
-			<li class="dropdown">
-				<a href="classes.list.html" class="dropdown-toggle" data-toggle="dropdown">Classes<b class="caret"></b></a>
-				<ul class="dropdown-menu ">
-					<li><a href="Account.html">Account</a></li><li><a href="Admin.html">Admin</a></li><li><a href="API.html">API</a></li><li><a href="Neb.html">Neb</a></li><li><a href="Transaction.html">Transaction</a></li>
-				</ul>
-			</li>
+			// Ínicio Angular
+			var myApp = angular.module('myApp', []);
 			
-			<li class="dropdown">
-				<a href="global.html" class="dropdown-toggle" data-toggle="dropdown">Global<b class="caret"></b></a>
-				<ul class="dropdown-menu ">
-					<li><a href="global.html">Global</a></li>
-				</ul>
-			</li>
+			// Ícone de carregando...
+			myApp.directive('ngLoading', ['$compile', function ($compile) {
+				var loadingSpinner = "<div class=\"loader loader--style2\" title=\"carregando...\">" +
+					"<svg version=\"1.1\" id=\"loader-1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\"" +
+					"x=\"0px\" y=\"0px\" width=\"20px\" height=\"20px\" viewBox=\"0 0 50 50\" style=\"enable-background:new 0 0 50 50;\" xml:space=\"preserve\">" +
+					"<path fill=\"#C5C5C5\" d=\"M25.251,6.461c-10.318,0-18.683,8.365-18.683,18.683h4.068c0-8.071,6.543-14.615,14.615-14.615V6.461z\">" +
+					"<animateTransform attributeType=\"xml\" attributeName=\"transform\" type=\"rotate\" from=\"0 25 25\" to=\"360 25 25\" dur=\"0.6s\" repeatCount=\"indefinite\" />" + 
+					"</path></svg></div>";
+				return {
+					restrict: 'A',
+					link: function (scope, element, attrs) {
+						var originalContent = element.html();
+						element.html(loadingSpinner);
+						scope.$watch(attrs.ngLoading, function (val) {
+							if(val && val > 0) {
+								if(val.notFound) {
+									element.html(attrs.ngLoadingNotFound ? attrs.ngLoadingNotFound : "Not found.");
+								} else {
+									element.html(originalContent);
+									$compile(element.contents())(scope);
+								}
+							} else {
+								element.html(loadingSpinner);
+							}
+						});
+					}
+				};
+			}]);
 			
-		</ul>
-        
-            <div class="col-sm-3 col-md-3">
-                <form class="navbar-form" role="search">
-                    <div class="input-group">
-                        <input type="text" class="form-control" placeholder="Search" name="q" id="search-input">
-                        <div class="input-group-btn">
-                            <button class="btn btn-default" id="search-submit"><i class="glyphicon glyphicon-search"></i></button>
-                        </div>
-                    </div>
-                </form>
-            </div>
-        
-	</div>
-
-</div>
-</div>
-
-
-<div class="container" id="toc-content">
-<div class="row">
-
-	
-	<div class="col-md-8">
-	
-		<div id="main">
+			// Controller para a página
+			myApp.controller('moedaController', ['$scope', function ($scope) {
+				$scope.inicio = function () {
+					$scope.exibirTabelaIco = true;
+					$scope.exibirHistorico = false;
+				}
+				
+				$scope.embaralha = function () {
+					var output = "";
+					var words = $scope.textToConvert.split(" ");
+					for(i = 0; i < words.length; i++) {
+						var letters = words[i].split("");
+						var tmpWord = "";
+						for(j = 0; j < letters.length; j++) {
+							var letter = letters[j];
+							if(tmpWord.length != 0 && tmpWord.length % 3 == 0) {
+								tmpWord = tmpWord + letter + " ";
+							} else {
+								tmpWord = tmpWord + letter;
+							}
+						}
+						var listPartsWord = tmpWord.split(" ");
+						var wordShuffle = "";
+						for(k = 0; k < listPartsWord.length; k++) {
+							var lettersPart = listPartsWord[k].split('').sort(function(){return 0.5-Math.random()}).join('');
+							wordShuffle = wordShuffle + lettersPart;
+						}
+						output = output + wordShuffle + " ";
+					}
+					
+					$scope.result = output;
+				}
+			}]);
 			
-
-	
-	
-
-
-
-
-
-
-
-
-
-
-
-	
-	
-
-
-
-
-
-    <section class="readme-section">
-        <article><h1>Nebulas JavaScript API</h1><p><a href="https://www.jsdelivr.com/package/npm/nebulas"><img src="https://data.jsdelivr.com/v1/package/npm/nebulas/badge" alt=""></a></p>
-<p><a href="https://nodei.co/npm/nebulas/"><img src="https://nodei.co/npm/nebulas.png" alt="NPM"></a></p>
-<p>This is the Nebulas compatible JavaScript API. Users can use it in browser and node.js. This javascript library also support API for our Repl console. Users can sign/send transactions and deploy/call smart contract with it. <a href="https://github.com/nebulasio/neb.js">neb.js</a></p>
-<h2>Install &amp;&amp; Package</h2><p>Use the <code>npm</code> installation dependencies</p>
-<pre class="prettyprint source"><code>npm install</code></pre><p>Use <code>gulp</code> to package the neb.js:</p>
-<pre class="prettyprint source"><code>gulp</code></pre><p>Now we can check the newly created files in <code>/dist</code></p>
-<p>Here you should see a bunch of js files. </p>
-<ul>
-<li><code>neb.js</code>:Used in browser side. Including outside dependency.</li>
-<li><code>neb-light.js</code>:Used in Repl console. Not including outside dependency.</li>
-<li><code>nebulas.js</code>: Fully functional in the browser. Users can create an address, sign a transaction, and deploy/call a smart contract.</li>
-</ul>
-<h6>CDN Support</h6><p>neb.js has been released to <a href="https://www.npmjs.com/package/nebulas">NPM</a>, and developers can use the following code through <a href="https://www.jsdelivr.com/package/npm/nebulas">CDN</a> addition.</p>
-<pre class="prettyprint source lang-html"><code>&lt;script src=&quot;https://cdn.jsdelivr.net/npm/nebulas@0.5.4/dist/nebulas.js&quot;>&lt;/script></code></pre><h2>Documentation</h2><p><a target="_blank" href="https://nebulasio.github.io/neb.js/index.html">Public API documentation link</a></p>
-<p>For build API documentation run <code>gulp documentation</code> task.</p>
-<p>Generated documentation you can check in <code>/documentation</code> folder.</p>
-<h2>Usage</h2><p><code>neb.js</code> is a useful library for nebulas developers. It provides rich underlying support in web and node.js's dapp. It implements the following functions.</p>
-<ul>
-<li>The RPC interface for the nebulas node is encapsulated;</li>
-<li>Create and manage the private key and address of the nebulas;</li>
-<li>Generate the transaction object and sign the transaction.</li>
-<li>Deploy/call smart contract, breakpoint debugging support.</li>
-</ul>
-<p>The use of neb.js can be used as examples:</p>
-<ul>
-<li><a href="example/example.html">web-example</a> </li>
-<li><a href="example/node-example.js">nodejs-example</a></li>
-<li><a href="example/node-nvm.js">node-nvm</a></li>
-</ul>
-<h2>Contribution</h2><p>We are very glad that you are considering to help Nebulas Team or go-nebulas project, including but not limited to source code, documents or others.</p>
-<p>If you'd like to contribute, please fork, fix, commit and send a pull request for the maintainers to review and merge into the main code base. If you wish to submit more complex changes though, please check up with the core devs first on our <a href="http://nebulasio.herokuapp.com">slack channel</a> to ensure those changes are in line with the general philosophy of the project and/or get some early feedback which can make both your efforts much lighter as well as our review and merge procedures quick and simple.</p>
-<p>Please refer to our <a href="https://github.com/nebulasio/wiki/blob/master/contribute.md">contribution guideline</a> for more information.</p>
-<p>Thanks.</p>
-<h2>License</h2><p>The go-nebulas project is licensed under the <a href="https://www.gnu.org/licenses/lgpl-3.0.en.html">GNU Lesser General Public License Version 3.0 (“LGPL v3”)</a>.</p>
-<p>For the more information about licensing, please refer to <a href="https://github.com/nebulasio/wiki/blob/master/licensing.md">Licensing</a> page.</p></article>
-    </section>
-
-
-
-
-
-
-
-		</div>
-	</div>
-
-	<div class="clearfix"></div>
-
-	
-		<div class="col-md-3">
-			<div id="toc" class="col-md-3 hidden-xs hidden-sm hidden-md"></div>
-		</div>
-	
-
-</div>
-</div>
-
-
-    <div class="modal fade" id="searchResults">
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-            <h4 class="modal-title">Search results</h4>
-          </div>
-          <div class="modal-body"></div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-          </div>
-        </div><!-- /.modal-content -->
-      </div><!-- /.modal-dialog -->
-    </div>
-
-
-<footer>
-
-
-
-	<span class="copyright">
-	Copyright © 2017-2018 Nebulas.io
-	</span>
-
-<span class="jsdoc-message">
-	Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a>
-	
-		on 2018-07-12T20:53:13+08:00
-	
-	using the <a href="https://github.com/docstrap/docstrap">DocStrap template</a>.
-</span>
-</footer>
-
-<script src="scripts/docstrap.lib.js"></script>
-<script src="scripts/toc.js"></script>
-
-    <script type="text/javascript" src="scripts/fulltext-search-ui.js"></script>
-
-
-<script>
-$( function () {
-	$( "[id*='$']" ).each( function () {
-		var $this = $( this );
-		$this.attr( "id", $this.attr( "id" ).replace( "$", "__" ) );
-	} );
-	$( ".tutorial-section pre, .readme-section pre, pre.prettyprint.source" ).each( function () {
-		var $this = $( this );
-		var example = $this.find( "code" );
-		exampleText = example.html();
-		var lang = /{@lang (.*?)}/.exec( exampleText );
-		if ( lang && lang[1] ) {
-			exampleText = exampleText.replace( lang[0], "" );
-			example.html( exampleText );
-			lang = lang[1];
-		} else {
-			var langClassMatch = example.parent()[0].className.match(/lang\-(\S+)/);
-			lang = langClassMatch ? langClassMatch[1] : "javascript";
-		}
-		if ( lang ) {
-			$this
-			.addClass( "sunlight-highlight-" + lang )
-			.addClass( "linenums" )
-			.html( example.html() );
-		}
-	} );
-	Sunlight.highlightAll( {
-		lineNumbers : true,
-		showMenu : true,
-		enableDoclinks : true
-	} );
-	$.catchAnchorLinks( {
-        navbarOffset: 10
-	} );
-	$( "#toc" ).toc( {
-		anchorName  : function ( i, heading, prefix ) {
-			return $( heading ).attr( "id" ) || ( prefix + i );
-		},
-		selectors   : "#toc-content h1,#toc-content h2,#toc-content h3,#toc-content h4",
-		showAndHide : false,
-		smoothScrolling: true
-	} );
-	$( "#main span[id^='toc']" ).addClass( "toc-shim" );
-	$( '.dropdown-toggle' ).dropdown();
-    $( "table" ).each( function () {
-      var $this = $( this );
-      $this.addClass('table');
-    } );
-} );
-</script>
-
-
-
-<!--Navigation and Symbol Display-->
-
-</body>
+		</script>
+		
+	</body>
 </html>
